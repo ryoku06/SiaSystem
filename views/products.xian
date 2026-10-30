@@ -1,0 +1,60 @@
+{{> head}}
+<body class="bg-gray-100">
+<div style="display:flex">
+  {{> sidebar}}
+  <div style="margin-left:240px;flex:1;min-height:100vh;display:flex;flex-direction:column">
+    {{> topbar}}
+    <div style="padding:28px">
+
+      <div class="bg-white rounded-xl p-6 shadow-sm mb-6">
+        <div style="font-size:1rem;font-weight:600;margin-bottom:16px;border-bottom:2px solid #f0f2f5;padding-bottom:10px">➕ Add New Product</div>
+        <form method="POST" action="/products/create">
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-semibold text-gray-600">Product Name *</label>
+              <input type="text" name="name" required placeholder="e.g. Wireless Mouse" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-400"/>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-semibold text-gray-600">Category</label>
+              <select name="categoryId" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-400">
+                <option value="">— Select —</option>
+                {{{catOptions}}}
+              </select>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-semibold text-gray-600">Price (₱) *</label>
+              <input type="number" name="price" step="0.01" min="0" required placeholder="0.00" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-400"/>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-semibold text-gray-600">Stock Quantity</label>
+              <input type="number" name="stockQty" min="0" placeholder="0" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-400"/>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-semibold text-gray-600">Description</label>
+              <input type="text" name="description" placeholder="Short description" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-400"/>
+            </div>
+            <div class="flex items-end">
+              <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg text-sm font-semibold transition">Add Product</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="bg-white rounded-xl p-6 shadow-sm">
+        <div style="font-size:1rem;font-weight:600;margin-bottom:16px;border-bottom:2px solid #f0f2f5;padding-bottom:10px">📦 Product List</div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead><tr class="bg-gray-50 text-left text-xs text-gray-500">
+              <th class="p-3">#</th><th class="p-3">Name</th><th class="p-3">Category</th><th class="p-3">Price</th><th class="p-3">Stock</th><th class="p-3">Status</th><th class="p-3">Actions</th>
+            </tr></thead>
+            <tbody>{{{rows}}}</tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+    {{> footer}}
+  </div>
+</div>
+</body>
+</html>

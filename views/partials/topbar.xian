@@ -1,0 +1,7 @@
+<header style="background:#fff;padding:14px 28px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e8e8e8;position:sticky;top:0;z-index:50">
+  <h1 style="font-size:1.1rem;font-weight:600;color:#1a1a2e">{{pageTitle}}</h1>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span style="font-size:.85rem;color:#666">{{userName}} <strong style="color:#ef4444">({{userRole}})</strong></span>
+    <div style="width:36px;height:36px;border-radius:50%;background:#ef4444;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem">{{userInitial}}</div>
+  </div>
+</header>

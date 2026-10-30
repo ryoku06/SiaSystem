@@ -1,0 +1,27 @@
+{{> head}}
+<body class="bg-gray-100">
+<div style="display:flex">
+  {{> sidebar}}
+  <div style="margin-left:240px;flex:1;min-height:100vh;display:flex;flex-direction:column">
+    {{> topbar}}
+    <div style="padding:28px">
+      <div class="mb-4"><a href="/pos" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Open POS Terminal</a></div>
+      <div class="bg-white rounded-xl p-6 shadow-sm">
+        <div style="font-size:1rem;font-weight:600;margin-bottom:16px;border-bottom:2px solid #f0f2f5;padding-bottom:10px">🕒 POS Transaction History</div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead><tr class="bg-gray-50 text-left text-xs text-gray-500">
+              <th class="p-3">Receipt No</th><th class="p-3">Total</th><th class="p-3">Discount</th>
+              <th class="p-3">Method</th><th class="p-3">Paid</th><th class="p-3">Change</th>
+              <th class="p-3">Status</th><th class="p-3">Date</th><th class="p-3">Action</th>
+            </tr></thead>
+            <tbody>{{{rows}}}</tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    {{> footer}}
+  </div>
+</div>
+</body>
+</html>

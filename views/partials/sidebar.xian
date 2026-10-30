@@ -1,0 +1,34 @@
+<aside style="width:240px;background:linear-gradient(180deg,#1a1a2e,#16213e);color:#fff;position:fixed;top:0;left:0;height:100vh;display:flex;flex-direction:column;z-index:100">
+  <div style="padding:24px 20px 16px;border-bottom:1px solid rgba(255,255,255,.1)">
+    <div style="font-size:1.3rem;font-weight:700;color:#ef4444">🔥 ERP System</div>
+    <div style="font-size:.7rem;color:rgba(255,255,255,.4);margin-top:2px">E-Commerce · POS · Accounting</div>
+  </div>
+  <nav style="padding:12px 0;flex:1;overflow-y:auto">
+    <div style="padding:8px 20px 4px;font-size:.65rem;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:1px">Main</div>
+    <a href="/dashboard" class="sidebar-link {{#if isDashboard}}active{{/if}}"><span>📊</span><span>Dashboard</span></a>
+    <a href="/shop" class="sidebar-link {{#if isShop}}active{{/if}}"><span>🛒</span><span>Shop</span></a>
+
+    <div style="padding:8px 20px 4px;font-size:.65rem;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:1px">E-Commerce</div>
+    <a href="/products" class="sidebar-link {{#if isProducts}}active{{/if}}"><span>📦</span><span>Products</span></a>
+    <a href="/categories" class="sidebar-link {{#if isCategories}}active{{/if}}"><span>🏷️</span><span>Categories</span></a>
+    <a href="/orders" class="sidebar-link {{#if isOrders}}active{{/if}}"><span>📋</span><span>Orders</span></a>
+
+    {{#if isCashierOrAdmin}}
+    <div style="padding:8px 20px 4px;font-size:.65rem;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:1px">POS</div>
+    <a href="/pos" class="sidebar-link {{#if isPOS}}active{{/if}}"><span>🧾</span><span>POS Terminal</span></a>
+    <a href="/pos/history" class="sidebar-link {{#if isPOSHistory}}active{{/if}}"><span>🕒</span><span>POS History</span></a>
+    {{/if}}
+
+    {{#if isAdmin}}
+    <div style="padding:8px 20px 4px;font-size:.65rem;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:1px">Accounting</div>
+    <a href="/accounting" class="sidebar-link {{#if isAccounting}}active{{/if}}"><span>💰</span><span>Entries</span></a>
+    <a href="/accounting/report" class="sidebar-link {{#if isReport}}active{{/if}}"><span>📈</span><span>Reports</span></a>
+
+    <div style="padding:8px 20px 4px;font-size:.65rem;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:1px">Admin</div>
+    <a href="/users" class="sidebar-link {{#if isUsers}}active{{/if}}"><span>👥</span><span>Users</span></a>
+    {{/if}}
+  </nav>
+  <div style="padding:16px 20px;border-top:1px solid rgba(255,255,255,.1)">
+    <a href="/logout" class="sidebar-link" style="color:rgba(255,255,255,.6)"><span>🚪</span><span>Logout</span></a>
+  </div>
+</aside>

@@ -1,0 +1,209 @@
+{{> head}}
+<body class="bg-gray-100">
+<div style="display:flex">
+  {{> sidebar}}
+  <div style="margin-left:240px;flex:1;display:flex;flex-direction:column">
+    {{> topbar}}
+    <div style="padding:20px;display:grid;grid-template-columns:1fr 360px;gap:18px;height:calc(100vh - 64px)">
+
+      <!-- Products Panel -->
+      <div style="display:flex;flex-direction:column;overflow:hidden">
+        <div style="display:flex;gap:10px;margin-bottom:14px">
+          <input type="text" id="posSearch" placeholder="🔍 Search product..." oninput="filterProducts()"
+            class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-400"/>
+          <select id="catFilter" onchange="filterProducts()" class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+            <option value="">All Categories</option>
+          </select>
+        </div>
+        <div id="productGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;overflow-y:auto;padding-bottom:10px"></div>
+      </div>
+
+      <!-- Cart Panel -->
+      <div class="bg-white rounded-xl shadow-sm" style="display:flex;flex-direction:column;overflow:hidden">
+        <div style="padding:16px 18px;border-bottom:1px solid #f0f0f0;font-weight:700;font-size:.95rem">
+          🧾 Cart <span id="cartCount" style="background:#ef4444;color:#fff;border-radius:20px;padding:1px 8px;font-size:.72rem;margin-left:6px">0</span>
+        </div>
+        <div id="cartItems" style="flex:1;overflow-y:auto;padding:10px 18px">
+          <p style="color:#aaa;text-align:center;padding:20px;font-size:.85rem">Cart is empty</p>
+        </div>
+        <div style="padding:14px 18px;border-top:1px solid #f0f0f0">
+          <div style="font-size:.875rem">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span>Subtotal</span><span id="subtotal">₱0.00</span></div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px;align-items:center">
+              <span>Discount (₱)</span>
+              <input type="number" id="discountInput" min="0" value="0" oninput="updateTotals()"
+                style="width:80px;padding:4px 8px;border:1px solid #ddd;border-radius:6px;text-align:right;font-size:.85rem"/>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:1.1rem;font-weight:700;color:#ef4444;border-top:2px solid #f0f0f0;padding-top:10px;margin-top:6px">
+              <span>TOTAL</span><span id="grandTotal">₱0.00</span>
+            </div>
+          </div>
+          <button id="payBtn" onclick="openPayModal()" disabled
+            style="width:100%;padding:12px;margin-top:12px;font-size:1rem;font-weight:700;background:#ef4444;color:#fff;border:none;border-radius:10px;cursor:pointer;transition:background .2s"
+            onmouseover="if(!this.disabled)this.style.background='#dc2626'" onmouseout="if(!this.disabled)this.style.background='#ef4444'">
+            Process Payment
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Payment Modal -->
+<div id="payModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:none;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:16px;padding:32px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.2)">
+    <h2 style="font-size:1.1rem;margin-bottom:20px;font-weight:700">💳 Process Payment</h2>
+    <div class="flex flex-col gap-1 mb-4">
+      <label class="text-xs font-semibold text-gray-600">Payment Method</label>
+      <select id="payMethod" class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-full">
+        <option value="cash">Cash</option><option value="card">Card</option><option value="gcash">GCash</option>
+      </select>
+    </div>
+    <div class="flex flex-col gap-1 mb-4">
+      <label class="text-xs font-semibold text-gray-600">Total Amount</label>
+      <input type="text" id="modalTotal" readonly class="border border-gray-200 rounded-lg px-3 py-2 text-sm bg-gray-50 font-bold text-red-500 text-lg"/>
+    </div>
+    <div class="flex flex-col gap-1 mb-4">
+      <label class="text-xs font-semibold text-gray-600">Amount Paid (₱)</label>
+      <input type="number" id="amountPaid" min="0" step="0.01" placeholder="0.00" oninput="computeChange()"
+        class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-full text-lg"/>
+    </div>
+    <div style="background:#f0fff4;border-radius:8px;padding:12px;margin-bottom:20px;font-size:.9rem">
+      Change: <strong id="changeDisplay" style="color:#00a854">₱0.00</strong>
+    </div>
+    <div style="display:flex;gap:12px">
+      <button onclick="confirmPayment()" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-lg transition">✓ Confirm</button>
+      <button onclick="closePayModal()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 rounded-lg transition">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Receipt Modal -->
+<div id="receiptModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:16px;padding:32px;width:100%;max-width:440px;text-align:center">
+    <div style="font-size:3rem;margin-bottom:12px">🧾</div>
+    <h2 style="margin-bottom:8px;color:#00a854;font-weight:700;font-size:1.2rem">Transaction Complete!</h2>
+    <div id="receiptContent" style="background:#f8f8f8;border-radius:10px;padding:16px;margin-top:16px;font-size:.85rem;line-height:2;text-align:left"></div>
+    <button onclick="newTransaction()" class="w-full mt-5 bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl transition">New Transaction</button>
+  </div>
+</div>
+
+<script>
+const PRODUCTS = {{{productsJson}}};
+let cart = [];
+
+const cats = [...new Set(PRODUCTS.map(p => p.category))];
+const catFilter = document.getElementById('catFilter');
+cats.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; catFilter.appendChild(o); });
+
+function renderProducts(list) {
+  const grid = document.getElementById('productGrid');
+  if (!list.length) { grid.innerHTML = '<p style="color:#aaa;grid-column:1/-1;text-align:center;padding:20px">No products found</p>'; return; }
+  grid.innerHTML = list.map(p => `
+    <div onclick="addToCart(${p.id})" style="background:#fff;border-radius:10px;padding:14px;cursor:pointer;border:2px solid transparent;transition:all .2s;box-shadow:0 2px 6px rgba(0,0,0,.05);opacity:${p.stock>0?1:.4};pointer-events:${p.stock>0?'all':'none'}"
+      onmouseover="this.style.borderColor='#ef4444';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='transparent';this.style.transform=''">
+      <div style="font-size:.82rem;font-weight:600;color:#1a1a2e;margin-bottom:4px">${p.name}</div>
+      <div style="font-size:1rem;font-weight:700;color:#ef4444">₱${p.price.toFixed(2)}</div>
+      <div style="font-size:.72rem;color:#aaa">Stock: ${p.stock}</div>
+    </div>`).join('');
+}
+
+function filterProducts() {
+  const q = document.getElementById('posSearch').value.toLowerCase();
+  const cat = document.getElementById('catFilter').value;
+  renderProducts(PRODUCTS.filter(p => (!cat || p.category === cat) && p.name.toLowerCase().includes(q)));
+}
+renderProducts(PRODUCTS);
+
+function addToCart(id) {
+  const p = PRODUCTS.find(x => x.id === id);
+  if (!p) return;
+  const ex = cart.find(x => x.id === id);
+  if (ex) { if (ex.qty >= p.stock) return alert('Max stock reached for ' + p.name); ex.qty++; }
+  else cart.push({ id: p.id, name: p.name, price: p.price, qty: 1, stock: p.stock });
+  renderCart();
+}
+
+function renderCart() {
+  const el = document.getElementById('cartItems');
+  document.getElementById('cartCount').textContent = cart.reduce((s,i)=>s+i.qty,0);
+  document.getElementById('payBtn').disabled = cart.length === 0;
+  document.getElementById('payBtn').style.background = cart.length ? '#ef4444' : '#ccc';
+  if (!cart.length) { el.innerHTML = '<p style="color:#aaa;text-align:center;padding:20px;font-size:.85rem">Cart is empty</p>'; updateTotals(); return; }
+  el.innerHTML = cart.map((item,i) => `
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f8f8f8;font-size:.82rem">
+      <div style="flex:1;font-weight:500">${item.name}</div>
+      <div style="display:flex;align-items:center;gap:4px">
+        <button onclick="changeQty(${i},-1)" style="width:22px;height:22px;border:1px solid #ddd;background:#f0f0f0;border-radius:4px;cursor:pointer;font-weight:700">−</button>
+        <span style="min-width:24px;text-align:center">${item.qty}</span>
+        <button onclick="changeQty(${i},1)" style="width:22px;height:22px;border:1px solid #ddd;background:#f0f0f0;border-radius:4px;cursor:pointer;font-weight:700">+</button>
+      </div>
+      <div style="color:#ef4444;font-weight:600;min-width:60px;text-align:right">₱${(item.price*item.qty).toFixed(2)}</div>
+      <span onclick="removeItem(${i})" style="cursor:pointer;color:#ccc;font-size:1.1rem;margin-left:4px" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#ccc'">✕</span>
+    </div>`).join('');
+  updateTotals();
+}
+
+function changeQty(i, d) {
+  cart[i].qty += d;
+  if (cart[i].qty <= 0) cart.splice(i,1);
+  else if (cart[i].qty > cart[i].stock) cart[i].qty = cart[i].stock;
+  renderCart();
+}
+function removeItem(i) { cart.splice(i,1); renderCart(); }
+
+function updateTotals() {
+  const sub = cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const disc = parseFloat(document.getElementById('discountInput').value)||0;
+  const grand = Math.max(0, sub-disc);
+  document.getElementById('subtotal').textContent = '₱'+sub.toFixed(2);
+  document.getElementById('grandTotal').textContent = '₱'+grand.toFixed(2);
+}
+
+function openPayModal() {
+  if (!cart.length) return;
+  const disc = parseFloat(document.getElementById('discountInput').value)||0;
+  const sub = cart.reduce((s,i)=>s+i.price*i.qty,0);
+  document.getElementById('modalTotal').value = '₱'+(Math.max(0,sub-disc)).toFixed(2);
+  document.getElementById('amountPaid').value = '';
+  document.getElementById('changeDisplay').textContent = '₱0.00';
+  document.getElementById('payModal').style.display = 'flex';
+}
+function closePayModal() { document.getElementById('payModal').style.display = 'none'; }
+
+function computeChange() {
+  const total = parseFloat(document.getElementById('modalTotal').value.replace('₱',''))||0;
+  const paid = parseFloat(document.getElementById('amountPaid').value)||0;
+  const change = paid - total;
+  document.getElementById('changeDisplay').textContent = change >= 0 ? '₱'+change.toFixed(2) : '⚠️ Insufficient';
+}
+
+async function confirmPayment() {
+  const total = parseFloat(document.getElementById('modalTotal').value.replace('₱',''));
+  const paid = parseFloat(document.getElementById('amountPaid').value);
+  if (isNaN(paid)||paid<total) return alert('Amount paid is less than total.');
+  const disc = parseFloat(document.getElementById('discountInput').value)||0;
+  const method = document.getElementById('payMethod').value;
+  const resp = await fetch('/pos/transaction', {
+    method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'},
+    body: new URLSearchParams({ items: JSON.stringify(cart.map(i=>({productId:i.id,quantity:i.qty}))), paymentMethod:method, amountPaid:paid, discount:disc })
+  });
+  const data = await resp.json();
+  if (data.success) {
+    closePayModal();
+    document.getElementById('receiptContent').innerHTML = `<strong>Receipt No:</strong> ${data.receiptNo}<br/><strong>Total:</strong> ₱${data.total}<br/><strong>Paid:</strong> ₱${paid.toFixed(2)}<br/><strong>Change:</strong> ₱${data.change}<br/><strong>Method:</strong> ${method}<br/><strong>Date:</strong> ${new Date().toLocaleString()}`;
+    document.getElementById('receiptModal').style.display = 'flex';
+    cart.forEach(item => { const p = PRODUCTS.find(x=>x.id===item.id); if(p) p.stock -= item.qty; });
+    filterProducts();
+  } else { alert('Error: ' + data.message); }
+}
+
+function newTransaction() {
+  cart = [];
+  document.getElementById('discountInput').value = '0';
+  document.getElementById('receiptModal').style.display = 'none';
+  renderCart();
+}
+</script>
+{{> footer}}

@@ -1,0 +1,24 @@
+{{> head}}
+<body class="bg-gray-100">
+<div style="display:flex">
+  {{> sidebar}}
+  <div style="margin-left:240px;flex:1;min-height:100vh;display:flex;flex-direction:column">
+    {{> topbar}}
+    <div style="padding:28px">
+      <div class="bg-white rounded-xl p-6 shadow-sm">
+        <div style="font-size:1rem;font-weight:600;margin-bottom:16px;border-bottom:2px solid #f0f2f5;padding-bottom:10px">📋 All Orders</div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead><tr class="bg-gray-50 text-left text-xs text-gray-500">
+              <th class="p-3">#ID</th><th class="p-3">Customer</th><th class="p-3">Total</th><th class="p-3">Payment</th><th class="p-3">Status</th><th class="p-3">Date</th><th class="p-3">Actions</th>
+            </tr></thead>
+            <tbody>{{{rows}}}</tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    {{> footer}}
+  </div>
+</div>
+</body>
+</html>

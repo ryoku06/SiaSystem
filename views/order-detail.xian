@@ -1,0 +1,52 @@
+{{> head}}
+<body class="bg-gray-100">
+<div style="display:flex">
+  {{> sidebar}}
+  <div style="margin-left:240px;flex:1;min-height:100vh;display:flex;flex-direction:column">
+    {{> topbar}}
+    <div style="padding:28px">
+      <div class="mb-4"><a href="/orders" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm transition">← Back to Orders</a></div>
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px">
+        <div>
+          <div class="bg-white rounded-xl p-6 shadow-sm mb-4">
+            <div style="font-size:1rem;font-weight:600;margin-bottom:16px;border-bottom:2px solid #f0f2f5;padding-bottom:10px">
+              Order #{{orderId}} — <span class="badge badge-{{statusLower}}">{{orderStatus}}</span>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead><tr class="bg-gray-50 text-xs text-gray-500 text-left">
+                  <th class="p-3">Product</th><th class="p-3">Qty</th><th class="p-3">Unit Price</th><th class="p-3">Subtotal</th>
+                </tr></thead>
+                <tbody>{{{itemRows}}}</tbody>
+                <tfoot>
+                  <tr><td colspan="3" class="text-right font-bold p-3">Total:</td>
+                  <td class="font-bold text-red-500 p-3">₱{{totalAmount}}</td></tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <div style="font-size:1rem;font-weight:600;margin-bottom:12px">Actions</div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap">
+              {{{statusActions}}}
+            </div>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl p-6 shadow-sm" style="height:fit-content">
+          <div style="font-size:1rem;font-weight:600;margin-bottom:12px;border-bottom:2px solid #f0f2f5;padding-bottom:10px">Customer Info</div>
+          <div class="text-sm space-y-2 text-gray-600">
+            <p><strong>Name:</strong> {{customerName}}</p>
+            <p><strong>Email:</strong> {{customerEmail}}</p>
+            <p><strong>Address:</strong> {{customerAddress}}</p>
+            <p><strong>Payment:</strong> {{paymentMethod}}</p>
+            <p><strong>Date:</strong> {{orderDate}}</p>
+            <p><strong>Notes:</strong> {{orderNotes}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{> footer}}
+  </div>
+</div>
+</body>
+</html>
